@@ -50,10 +50,17 @@ public class Player implements Attackable {
     }
     
     public void attack(Player target, Weapon weapon) {
-    	System.out.println(this.getName() + " 가 " + this.getWeapon() + "를 가지고 " + target.getName() + " 를 공격합니다.");
-		System.out.println(weapon);
-		System.out.println(weapon.getPower());
-		target.setHp(target.getHp() - weapon.getPower());
+		int damage = weapon.getFinalDamage();
+
+		if (weapon.isLastHitCrit()) {
+			System.out.printf("치명타! %s 가 %s 를 %d 데미지로 강타합니다! (%.0f%% 데미지배율)",
+					this.getName(), target.getName(), damage, weapon.getCritMultiplier() * 100);
+		} else {
+			System.out.printf("%s 가 %s 로 %s 를 %d 데미지로 공격합니다.",
+					this.getName(), weapon.getName(), target.getName(), damage);
+		}
+
+		target.setHp(target.getHp() - damage);
     }
 
 	public String getName() {
@@ -98,8 +105,8 @@ public class Player implements Attackable {
     }
     
     //여러 플레이어 정보보기
-    public static void showStatus(Player[] player, int count) {
-    	for(int i = 0; i < count; i++) {
+    public static void showStatus(Player[] player) {
+    	for(int i = 0; i < player.length; i++) {
     		player[i].showStatus();
     		System.out.println();
     	}

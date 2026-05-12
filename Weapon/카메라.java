@@ -1,9 +1,9 @@
 package Weapon;
 
-public class 카메라 extends Weapon{
+public class 카메라 extends Weapon {
 	public 카메라() {}
 
 	public 카메라(String name, int power) {
-		super(name, power);
+		super(name, power, 0.5, 1.2);
 	}
 }
