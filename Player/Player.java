@@ -8,6 +8,7 @@ public class Player implements Attackable {
     private int hp;
     protected int basePower; //기본공격력
     private PowerBuff activeBuff = null;  // 현재 걸린 버프
+    public String team;
     
     public Player() {
     		System.out.println("플레이어 생성!");
@@ -21,6 +22,19 @@ public class Player implements Attackable {
     }
 
     public void attack(){
+    }
+    
+    public int getEffectivePower() {
+        if (activeBuff != null) {
+            return basePower + activeBuff.getAmount();
+        }
+        return basePower;
+    }
+
+    public void applyBuff(PowerBuff buff) {
+        this.activeBuff = buff;
+        System.out.println(name + ": 버프 +" + buff.getAmount() + " 적용됨");
+        this.setPower(basePower + buff.getAmount());
     }
     
     public void attack(Player target) {
@@ -91,15 +105,5 @@ public class Player implements Attackable {
     	}
     }
     
-    public int getEffectivePower() {
-        if (activeBuff != null) {
-            return basePower + activeBuff.getAmount();
-        }
-        return basePower;
-    }
-
-    public void applyBuff(PowerBuff buff) {
-        this.activeBuff = buff;
-        System.out.println(name + ": 버프 +" + buff.getAmount() + " 적용됨");
-    }
+    
 }
