@@ -84,8 +84,8 @@ public class Player implements Attackable {
     }
     
     //여러 플레이어 정보보기
-    public static void showStatus(Player[] player) {
-    	for(int i = 0; i < player.length; i++) {
+    public static void showStatus(Player[] player, int count) {
+    	for(int i = 0; i < count; i++) {
     		player[i].showStatus();
     		System.out.println();
     	}

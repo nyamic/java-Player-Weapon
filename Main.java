@@ -57,12 +57,12 @@ public class Main {
 
 			if (target.getHp() <=0 ) {
 
-				ps[j] = ps[count];
-
+				ps[j] = ps[count - 1];
+				ps[count - 1] = null;
 				count-- ;
 			}
 
-			Player.showStatus(ps);
+			Player.showStatus(ps, count);
 			if (count < 1) break;
 
 		}
