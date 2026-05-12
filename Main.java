@@ -24,12 +24,9 @@ public class Main {
 	}
 	
 	public static boolean checkDefeatTeam(Player[] ps) {
-		boolean b = false;
-		
-		if(ps[0].getName() == "die" && ps[2].getName() == "die" && ps[4].getName() == "die") b = true;
-		if(ps[1].getName() == "die" && ps[3].getName() == "die" && ps[5].getName() == "die") b = true;
-		
-		return b;
+		boolean redDead = !ps[0].isAlive() && !ps[2].isAlive() && !ps[4].isAlive();
+		boolean blueDead = !ps[1].isAlive() && !ps[3].isAlive() && !ps[5].isAlive();
+		return redDead || blueDead;
 	}
 	
 	public static void main(String[] args) {
@@ -69,7 +66,7 @@ public class Main {
 			
 			if(currentTeam.equals(attacker.team)) continue;
 			
-			if(target.getName() == "die") continue;
+			if(!target.isAlive()) continue;
 
 			int w = r.nextInt(2);
 			
@@ -85,7 +82,6 @@ public class Main {
 
 			if (target.getHp() <=0 ) {
 				System.out.println(target.getName() + "가 죽었습니다.");
-				ps[j].setName("die");
 			}
 
 			Player.showStatus(ps);
@@ -94,8 +90,8 @@ public class Main {
 		}
 
 		for(Player p : ps) {
-			if(p.getName() != "die") {
-				System.out.println(p.team + " team Win!");
+			if(p.isAlive()) {
+				System.out.println(p.team + " 팀 승리!");
 				break;
 			}
 		}

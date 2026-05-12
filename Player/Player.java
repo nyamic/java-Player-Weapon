@@ -63,38 +63,36 @@ public class Player implements Attackable {
 		target.setHp(target.getHp() - damage);
     }
 
+	//플레이어 생존 확인 메서드
+	public boolean isAlive() {
+		return this.hp > 0;
+	}
+
 	public String getName() {
 		return name;
 	}
-
 	public void setName(String name) {
 		this.name = name;
 	}
-
 	public Weapon getWeapon() {
 		return weapon;
 	}
-
 	public void setWeapon(Weapon weapon) {
 		this.weapon = weapon;
 	}
-
 	public int getHp() {
 		return hp;
 	}
-
 	public void setHp(int hp) {
 		this.hp = hp;
 	}
-
 	public int getPower() {
 		return basePower;
 	}
-
 	public void setPower(int power) {
 		this.basePower = power;
 	}
-    
+
 	//한 플레이어 정보보기
     public void showStatus() {
     		System.out.printf("%s(%3d)", this.getName(), this.basePower);
@@ -106,10 +104,11 @@ public class Player implements Attackable {
     
     //여러 플레이어 정보보기
     public static void showStatus(Player[] player) {
-    	for(int i = 0; i < player.length; i++) {
-    		player[i].showStatus();
-    		System.out.println();
-    	}
+		for (Player p : player) {
+			if (p.isAlive()) {  // 살아있는 캐릭터만 출력
+				System.out.println(p.getName() + " | HP: " + p.getHp() + " | Team: " + p.team);
+			}
+		}
     }
     
     
