@@ -1,6 +1,8 @@
 package Player;
 
 import Weapon.Weapon;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Player implements Attackable {
     private String name;
@@ -62,6 +64,31 @@ public class Player implements Attackable {
 
 		target.setHp(target.getHp() - damage);
     }
+
+	public void useSkill(Player[] ps, Player defaultTarget) {
+		attack(defaultTarget);
+	}
+
+	public static boolean hasNormalAttacker(Player[] ps, String team) {
+		for (Player p : ps) {
+			if (p.isAlive() && p.team.equals(team)) {
+				if (!(p instanceof 하비) && !(p instanceof 거스)) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	public static List<Player> getAliveTeammates(Player[] ps, String team) {
+		List<Player> list = new ArrayList<>();
+		for (Player p : ps) {
+			if (p.isAlive() && p.team.equals(team)) {
+				list.add(p);
+			}
+		}
+		return list;
+	}
 
 	//플레이어 생존 확인 메서드
 	public boolean isAlive() {

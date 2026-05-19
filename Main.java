@@ -1,5 +1,5 @@
 import java.util.Random;
-
+import java.util.List;
 import Player.*;
 import Weapon.*;
 
@@ -28,13 +28,58 @@ public class Main {
 		boolean blueDead = !ps[1].isAlive() && !ps[3].isAlive() && !ps[5].isAlive();
 		return redDead || blueDead;
 	}
-	
+
+	///<summary>하비/거스만 남았는지 확인하고 딜러 전환</summary>
+	public static void checkAndConvert(Player[] ps, Random r) {
+		for (String team : new String[]{"red", "blue"}) {
+			List<Player> alive = Player.getAliveTeammates(ps, team);
+			if (alive.isEmpty()) continue;
+
+			boolean hasNormal = Player.hasNormalAttacker(ps, team);
+
+			하비 harvey = null;
+			거스 gus = null;
+			for (Player p : alive) {
+				if (p instanceof 하비) harvey = (하비) p;
+				if (p instanceof 거스) gus = (거스) p;
+			}
+
+			// 하비만 남음 --> 하비 딜러 전환
+			if (harvey != null && gus == null && !hasNormal) {
+				harvey.convertToDamageDealer();
+			}
+
+			// 거스만 남음 --> 거스 딜러 전환
+			if (gus != null && harvey == null && !hasNormal) {
+				gus.convertToDamageDealer();
+			}
+
+			// 하비+거스만 남음
+			if (harvey != null && gus != null && !hasNormal) {
+				if (!harvey.isDamageDealer() && !gus.isDamageDealer()) {
+					// 랜덤 1명만 딜러 전환
+					if (r.nextBoolean()) {
+						harvey.convertToDamageDealer();
+					} else {
+						gus.convertToDamageDealer();
+					}
+				} else if (harvey.isDamageDealer() && !harvey.isAlive()) {
+					// 딜러였던 하비 사망 --> 거스도 딜러 전환
+					gus.convertToDamageDealer();
+				} else if (gus.isDamageDealer() && !gus.isAlive()) {
+					// 딜러였던 거스 사망 --> 하비도 딜러 전환
+					harvey.convertToDamageDealer();
+				}
+			}
+		}
+	}
+
 	public static void main(String[] args) {
 		//Player 생성
 		헤일리 Hailey = new 헤일리("헤일리", 200, 60);
 		레아 Rea = new 레아("레아", 200, 30);
 		로빈 Robin = new 로빈("로빈", 200, 40);
-		마리 Mary = new 마리("마리", 200, 50);
+		마리 Mary = new 마리("마니", 200, 50);
 		거스 Gus = new 거스("거스", 200, 10);
 		하비 Harvey = new 하비("하비", 200, 100);
 		
@@ -55,6 +100,8 @@ public class Main {
 		
 		String currentTeam = "red";
 		while(true) {
+			checkAndConvert(ps, r);
+
 			int i = r.nextInt(count) ;
 			int j = r.nextInt(count) ;
 			if (i==j)  continue;
@@ -63,19 +110,17 @@ public class Main {
 			target = ps[ j ];
 			
 			if(attacker.team.equals(target.team)) continue;
-			
 			if(currentTeam.equals(attacker.team)) continue;
-			
+			if (!attacker.isAlive()) continue;
 			if(!target.isAlive()) continue;
 
 			int w = r.nextInt(2);
-			
 			if(w == 1 && attacker.getWeapon() != null) {
 				attacker.attack(target, attacker.getWeapon());
 				System.out.println(w);
 			}
 			else {
-				attacker.attack(target);
+				attacker.useSkill(ps, target);
 			}
 			
 			currentTeam = attacker.team;

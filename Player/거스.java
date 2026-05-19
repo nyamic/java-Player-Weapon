@@ -1,12 +1,55 @@
 package Player;
+import java.util.List;
+import java.util.Random;
+import java.util.ArrayList;
 
 public class 거스 extends Player{
+	private boolean isDamageDealer = false;
+	private static final int DAMAGE_DEALER_POWER = 50;
+
 	public 거스() {}
 	
 	public 거스(String name, int hp, int power) {
 		super(name, hp, power);
 	}
-	
+
+	///<summary>딜러로 전환(power값 변경)</summary>
+	public void convertToDamageDealer() {
+		if (!isDamageDealer) {
+			isDamageDealer = true;
+			this.setPower(DAMAGE_DEALER_POWER);
+			System.out.println(getName() + "가 딜러로 전환됩니다! (공격력 " + DAMAGE_DEALER_POWER + ")");
+		}
+	}
+
+	public boolean isDamageDealer() {
+		return isDamageDealer;
+	}
+
+	@Override
+	public void useSkill(Player[] ps, Player defaultTarget) {
+		if (isDamageDealer) {
+			attack(defaultTarget);
+			return;
+		}
+
+		List<Player> teammates = Player.getAliveTeammates(ps, this.team);
+
+		//딜러전환x --> 랜덤 아군 버프
+		List<Player> targets = new ArrayList<>();
+		for (Player p : teammates) {
+			if (p == this) continue;
+			if (p instanceof 거스) continue;
+			targets.add(p);
+		}
+
+		if (!targets.isEmpty()) {
+			Random r = new Random();
+			Player ally = targets.get(r.nextInt(targets.size()));
+			버프주기(ally);
+		}
+	}
+
 	public void attack(Player target) {
 		버프주기(target);
 	}
