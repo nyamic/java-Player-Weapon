@@ -1,6 +1,8 @@
 import java.util.Random;
 import java.util.List;
+import javax.swing.JFrame;
 import Player.*;
+import View.BattleView;
 import Weapon.*;
 
 public class Main {
@@ -94,6 +96,17 @@ public class Main {
 		shuffleArray(ps);
 		selectTeam(ps);
 		
+		//GUI
+		JFrame frame = new JFrame("3:3 스타듀 배틀");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(1000, 650);
+
+        BattleView battleView = new BattleView(ps);
+
+        frame.add(battleView);
+        frame.setVisible(true); 
+
+		
 		Random r = new Random();
 
 		int count = ps.length; 
@@ -130,6 +143,8 @@ public class Main {
 			}
 
 			Player.showStatus(ps);
+			
+			battleView.updateAllTeams(ps);
 			
 			if(checkDefeatTeam(ps)) break;
 		}
