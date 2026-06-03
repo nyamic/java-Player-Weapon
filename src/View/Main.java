@@ -1,4 +1,5 @@
 //Main.java (JFrame)
+package View;
 
 import java.util.Random;
 
