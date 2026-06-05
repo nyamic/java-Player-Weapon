@@ -30,28 +30,23 @@ public class 거스 extends Player {
 
 	@Override
 	public void useSkill(Player[] ps, Player defaultTarget) {
-		if (isDamageDealer) {
-			attack(defaultTarget);
-			return;
-		}
-
-		List<Player> teammates = Player.getAliveTeammates(ps, this.team);
-
-		// 딜러전환x --> 랜덤 아군 버프
-		List<Player> targets = new ArrayList<>();
-		for (Player p : teammates) {
-			if (p == this)
-				continue;
-			if (p instanceof 거스)
-				continue;
-			targets.add(p);
-		}
-
-		if (!targets.isEmpty()) {
-			Random r = new Random();
-			Player ally = targets.get(r.nextInt(targets.size()));
-			버프주기(ally);
-		}
+	    if (isDamageDealer) {
+	        attack(defaultTarget);
+	        return;
+	    }
+	    Player target = defaultTarget;
+	    if (target == null) {
+	        List<Player> teammates = Player.getAliveTeammates(ps, this.team);
+	        List<Player> candidates = new ArrayList<>();
+	        for (Player p : teammates) {
+	            if (p == this) continue;
+	            if (p instanceof 거스) continue;
+	            candidates.add(p);
+	        }
+	        if (candidates.isEmpty()) return;
+	        target = candidates.get(new Random().nextInt(candidates.size()));
+	    }
+	    버프주기(target);
 	}
 
 	public void attack(Player target) {

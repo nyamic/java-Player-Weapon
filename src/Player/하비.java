@@ -28,26 +28,23 @@ public class 하비 extends Player{
 
 	@Override
 	public void useSkill(Player[] ps, Player defaultTarget) {
-		//딜러전환o --> 적 공격
-		if (isDamageDealer) {
-			attack(defaultTarget);
-			return;
-		}
-
-		//딜러전환x --> 랜덤 아군 힐
-		List<Player> teammates = Player.getAliveTeammates(ps, this.team);
-
-		List<Player> targets = new ArrayList<>();
-		for (Player p : teammates) {
-			if (p == this) continue;
-			targets.add(p);
-		}
-
-		if (!targets.isEmpty()) {
-			Random r = new Random();
-			Player wounded = targets.get(r.nextInt(targets.size()));
-			치유하기(wounded);
-		}
+	    if (isDamageDealer) {
+	        attack(defaultTarget);
+	        return;
+	    }
+	    // defaultTarget이 있으면 그 대상, 없으면 랜덤 아군
+	    Player target = defaultTarget;
+	    if (target == null) {
+	        List<Player> teammates = Player.getAliveTeammates(ps, this.team);
+	        List<Player> candidates = new ArrayList<>();
+	        for (Player p : teammates) {
+	            if (p == this) continue;
+	            candidates.add(p);
+	        }
+	        if (candidates.isEmpty()) return;
+	        target = candidates.get(new Random().nextInt(candidates.size()));
+	    }
+	    치유하기(target);
 	}
 
 	public void attack(Player target) {

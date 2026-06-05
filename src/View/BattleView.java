@@ -90,6 +90,12 @@ public class BattleView extends JPanel {
         for (UnitPanel p : rightUnits) p.setHighlight(true);
     }
     
+    public void highlightAllAllies(int attackerIdx) {
+        for (int i = 0; i < leftUnits.length; i++) {
+            if (i != attackerIdx) leftUnits[i].setHighlight(true);
+        }
+    }
+    
     //ㅡㅡㅡㅡㅡㅡ getter ㅡㅡㅡㅡㅡㅡㅡㅡㅡ
     
     public UnitPanel[] getLeftPanels() { return leftUnits; }

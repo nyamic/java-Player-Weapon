@@ -96,7 +96,13 @@ public class BattleController {
         if (!attacker.isAlive()) return;
 
         selectedAttacker = attacker;
-        enterUserSelectTarget(panelIdx);
+
+        // 힐러/서포터 모드면 아군 선택 단계로
+        if (isSupporter(attacker) && !isDealerMode(attacker)) {
+            enterUserSelectAlly(panelIdx);
+        } else {
+            enterUserSelectTarget(panelIdx);
+        }
     }
 
     // 캐릭터 클릭 (target 선택)
@@ -104,13 +110,19 @@ public class BattleController {
         if (state != TurnState.USER_SELECT_TARGET) return;
 
         Player target = ps[psIdx];
-
-        // 적군 중에서 target 선택 (거스/하비 스킬 제외)
-        boolean isEnemy = isRightTeam(psIdx);
-        if (!isEnemy) return;
         if (!target.isAlive()) return;
 
-        executeUserAttack(selectedAttacker, target);
+        boolean isEnemy = isRightTeam(psIdx);
+
+        // 힐러/서포터 모드 --> 아군만 선택 가능
+        if (isSupporter(selectedAttacker) && !isDealerMode(selectedAttacker)) {
+            if (isEnemy) return; // 적군 클릭 무시
+            if (target == selectedAttacker) return; // 자기 자신 무시
+            executeUserSkill(selectedAttacker, target);
+        } else {
+            if (!isEnemy) return; // 아군 클릭 무시
+            executeUserAttack(selectedAttacker, target);
+        }
     }
 
     // ㅡㅡㅡㅡㅡㅡㅡ 전투 실행 ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
@@ -132,22 +144,28 @@ public class BattleController {
     }
 
     private void executeComputerAttack() {
-        // 살아있는 오른쪽(컴퓨터)팀 플레이어 목록
         List<Player> aliveAttackers = getAlivePlayers(RIGHT_PS_IDX);
         if (aliveAttackers.isEmpty()) return;
 
-        // 랜덤으로 공격자 선택
         Player attacker = aliveAttackers.get(random.nextInt(aliveAttackers.size()));
-
-        // 하비/거스 딜러 전환 체크
         checkAndConvertIfNeeded(attacker, "blue");
 
-        // 하비/거스가 힐러/서포터 모드면 useSkill(아군 대상)
-        if (isSupporter(attacker) && !isDealerMode(attacker)) {
-            attacker.useSkill(ps, null); // useSkill 내부에서 아군 선택
-            view.appendLog("[BLUE] " + attacker.getName() + " 스킬 사용!");
+        if (isSupporter(attacker)) {
+            if (!isDealerMode(attacker)) {
+                // 힐러/서포터 모드 → 아군 대상 (useSkill 내부에서 처리)
+                attacker.useSkill(ps, null);
+                view.appendLog("[BLUE] " + attacker.getName() + " 스킬 사용!");
+            } else {
+                // 딜러 모드 → 적군(왼쪽팀) 랜덤 타겟 지정
+                List<Player> aliveTargets = getAlivePlayers(LEFT_PS_IDX);
+                if (aliveTargets.isEmpty()) return;
+                Player target = aliveTargets.get(random.nextInt(aliveTargets.size()));
+                attacker.useSkill(ps, target); // target = 적군
+                view.appendLog("[BLUE] " + attacker.getName()
+                        + " → [RED] " + target.getName()
+                        + " 공격! (남은 HP: " + Math.max(target.getHp(), 0) + ")");
+            }
         } else {
-            // 살아있는 왼쪽(유저)팀 중 랜덤 타겟
             List<Player> aliveTargets = getAlivePlayers(LEFT_PS_IDX);
             if (aliveTargets.isEmpty()) return;
             Player target = aliveTargets.get(random.nextInt(aliveTargets.size()));
@@ -175,6 +193,30 @@ public class BattleController {
         view.appendLog(attackerTag + " " + attacker.getName()
                 + " → " + targetTag + " " + target.getName()
                 + " 공격! (남은 HP: " + Math.max(target.getHp(), 0) + ")");
+    }
+    
+    private void enterUserSelectAlly(int panelIdx) {
+        state = TurnState.USER_SELECT_TARGET;
+        view.highlightAsAttacker(panelIdx);
+        view.highlightAllAllies(panelIdx); // 자신 제외 왼쪽 패널 강조
+        view.appendLog("[USER] 스킬을 사용할 아군 캐릭터를 클릭하세요.");
+    }
+    
+    private void executeUserSkill(Player attacker, Player target) {
+        checkAndConvertIfNeeded(attacker, "red");
+
+        attacker.useSkill(ps, target);
+        view.appendLog("[RED] " + attacker.getName()
+                + " → [RED] " + target.getName() + " 스킬 사용!");
+
+        view.updateAllTeams(ps);
+
+        if (Main.checkDefeatTeam(ps)) {
+            endGame("RED 팀 승리!");
+            return;
+        }
+
+        enterComputerTurn();
     }
 
     // ── 하비/거스 딜러 전환 체크 ──────────────────────────
