@@ -2,10 +2,10 @@ package Player;
 
 import Weapon.*;
 
-public class 마리 extends Player{
-	public 마리() {}
+public class 마니 extends Player{
+	public 마니() {}
 	
-	public 마리(String name, int hp, int power) {
+	public 마니(String name, int hp, int power) {
 		super(name, hp, power);
 	}
 

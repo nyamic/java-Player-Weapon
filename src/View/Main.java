@@ -37,7 +37,7 @@ public class Main {
 		헤일리 Hailey = new 헤일리("헤일리", 200, 60);
 		레아 Rea = new 레아("레아", 200, 30);
 		로빈 Robin = new 로빈("로빈", 200, 40);
-		마리 Mary = new 마리("마리", 200, 50);
+		마니 Mary = new 마니("마니", 200, 50);
 		거스 Gus = new 거스("거스", 200, 10);
 		하비 Harvey = new 하비("하비", 200, 100);
 		
