@@ -49,8 +49,14 @@ public class 거스 extends Player {
 	    버프주기(target);
 	}
 
+	@Override
 	public void attack(Player target) {
-		버프주기(target);
+	    if (isDamageDealer) {
+	        System.out.println(getName() + "가 " + target.getName() + "을 공격합니다. (데미지: " + getPower() + ")");
+	        target.setHp(target.getHp() - this.getPower());
+	    } else {
+	        버프주기(target);
+	    }
 	}
 
 	public void 버프주기(Player target) {

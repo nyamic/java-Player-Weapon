@@ -107,6 +107,8 @@ public class BattleController {
         if (!attacker.isAlive()) return;
 
         selectedAttacker = attacker;
+        
+        checkAndConvertIfNeeded(attacker, "red");
 
         if (isSupporter(attacker) && !isDealerMode(attacker)) {
             enterUserSelectAlly(panelIdx);
