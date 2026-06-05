@@ -250,6 +250,9 @@ public class BattleController {
         state = TurnState.GAME_OVER;
         view.clearAllHighlights();
         view.appendLog("\n" + msg + " 게임 종료.");
+        
+        String winnerTeam = msg.contains("RED") ? "PIERRE" : "JOJA";
+        view.showWinner(ps, winnerTeam);
     }
 
     // ㅡㅡㅡㅡㅡㅡ 유틸 ㅡㅡㅡㅡㅡㅡ
