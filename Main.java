@@ -38,9 +38,9 @@ public class Main {
 		하비 Harvey = new 하비("하비", 200, 100);
 		
 		//무기 생성
-		Rea.setWeapon(new 카메라("카메라", 40));
-		Robin.setWeapon(new 도끼("도끼", 90));
-		Mary.setWeapon(new 채찍("채찍", 100));
+		Rea.setWeapon(new Weapon("카메라", 40, 0.5, 1.2));
+		Robin.setWeapon(new Weapon("도끼", 90, 0.2, 2.0));
+		Mary.setWeapon(new Weapon("채찍", 100, 0.3, 1.5));
 		
 		Player [] ps= {Hailey, Rea, Mary, Gus, Harvey, Robin};
 		Player attacker, target;
