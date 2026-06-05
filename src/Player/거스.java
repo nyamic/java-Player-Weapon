@@ -1,19 +1,21 @@
 package Player;
+
 import java.util.List;
 import java.util.Random;
 import java.util.ArrayList;
 
-public class 거스 extends Player{
+public class 거스 extends Player {
 	private boolean isDamageDealer = false;
 	private static final int DAMAGE_DEALER_POWER = 50;
 
-	public 거스() {}
-	
+	public 거스() {
+	}
+
 	public 거스(String name, int hp, int power) {
 		super(name, hp, power);
 	}
 
-	///<summary>딜러로 전환(power값 변경)</summary>
+	/// <summary>딜러로 전환(power값 변경)</summary>
 	public void convertToDamageDealer() {
 		if (!isDamageDealer) {
 			isDamageDealer = true;
@@ -35,11 +37,13 @@ public class 거스 extends Player{
 
 		List<Player> teammates = Player.getAliveTeammates(ps, this.team);
 
-		//딜러전환x --> 랜덤 아군 버프
+		// 딜러전환x --> 랜덤 아군 버프
 		List<Player> targets = new ArrayList<>();
 		for (Player p : teammates) {
-			if (p == this) continue;
-			if (p instanceof 거스) continue;
+			if (p == this)
+				continue;
+			if (p instanceof 거스)
+				continue;
 			targets.add(p);
 		}
 
@@ -53,19 +57,19 @@ public class 거스 extends Player{
 	public void attack(Player target) {
 		버프주기(target);
 	}
-	
+
 	public void 버프주기(Player target) {
 		System.out.println(this.getName() + "가 " + target.getName() + "의 power를 10 증가시킵니다.");
-		
+
 		target.applyBuff(new PowerBuff(this.getPower()));
 	}
-	
+
 	public void 허허허사람좋은웃음짓기() {
-		
+
 	}
-	
+
 	public void 미니게임하기() {
-		
+
 	}
 
 }

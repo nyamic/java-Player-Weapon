@@ -37,6 +37,8 @@ public class BattleView extends JPanel {
         add(eastPanel, BorderLayout.EAST);
         add(scroll, BorderLayout.CENTER); 
     }
+    
+    //ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ 화면갱신 ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
 
     public void updateAllTeams(Player[] ps) {
         // 짝수 번호는 왼쪽팀에 배정
@@ -55,85 +57,41 @@ public class BattleView extends JPanel {
         console.setCaretPosition(console.getDocument().getLength());
     }
 
+
+    // 모든 패널 강조 초기화
+    public void clearAllHighlights() {
+        for (UnitPanel p : leftUnits)  p.setHighlight(false);
+        for (UnitPanel p : rightUnits) p.setHighlight(false);
+        for (UnitPanel p : leftUnits)  p.setAttackerHighlight(false);
+        for (UnitPanel p : rightUnits) p.setAttackerHighlight(false);
+    }
+    
+    // ㅡㅡㅡㅡ 컨트롤러가 콜백 등록할 때 쓰는 메서드들 ㅡㅡㅡㅡㅡㅡㅡㅡ
+
+    // 왼쪽(유저) 공격버튼 콜백 등록
+    public void setOnAttackBtnClicked(int index, Runnable callback) {
+        leftUnits[index].getAttackBtn().addActionListener(e -> callback.run());
+    }
+
+    // 타겟 선택 콜백 등록
+    public void setOnUnitClicked(boolean isLeft, int index, Runnable callback) {
+        if (isLeft) leftUnits[index].setOnClickCallback(callback);
+        else        rightUnits[index].setOnClickCallback(callback);
+    }
+    
+    // ㅡㅡㅡㅡㅡㅡㅡ 강조 표시 ㅡㅡㅡㅡㅡㅡㅡ
+    
+    public void highlightAsAttacker(int leftIndex) {
+        clearAllHighlights();
+        leftUnits[leftIndex].setAttackerHighlight(true);
+    }
+
+    public void highlightAllEnemies() {
+        for (UnitPanel p : rightUnits) p.setHighlight(true);
+    }
+    
+    //ㅡㅡㅡㅡㅡㅡ getter ㅡㅡㅡㅡㅡㅡㅡㅡㅡ
+    
     public UnitPanel[] getLeftPanels() { return leftUnits; }
     public UnitPanel[] getRightPanels() { return rightUnits; }
-    
-    public void attack(Player[] ps) {
-        java.util.Random random = new java.util.Random();
-
-        int[] blueTeamIndices = {1, 3, 5};
-        for (int i = 0; i < leftUnits.length; i++) {
-            int attackerIdx = i * 2;
-            
-            leftUnits[i].getAttackBtn().addActionListener(new java.awt.event.ActionListener() {
-                public void actionPerformed(java.awt.event.ActionEvent e) {
-                    Player attacker = ps[attackerIdx];
-                    
-                    if (Main.checkDefeatTeam(ps)) {
-                        appendLog("📢 이미 게임이 종료되었습니다.");
-                        return;
-                    }
-                    
-                    java.util.List<Integer> aliveTargets = new java.util.ArrayList<>();
-                    for (int idx : blueTeamIndices) {
-                        if (ps[idx].isAlive()) {
-                            aliveTargets.add(idx);
-                        }
-                    }
-                    
-                    if (aliveTargets.isEmpty()) return;
-                    
-                    int targetIdx = aliveTargets.get(random.nextInt(aliveTargets.size()));
-                    Player target = ps[targetIdx];
-                    
-                    attacker.attack(target);
-                    
-                    appendLog("[RED] " + attacker.getName() + " -> [BLUE] " + target.getName() + " 공격!");
-                    updateAllTeams(ps);
-                    
-                    if (Main.checkDefeatTeam(ps)) {
-                        appendLog("\n🏆 [RED] 팀이 최종 승리했습니다! 게임 종료 🏆");
-                    }
-                }
-            });
-        }
-
-
-        int[] redTeamIndices = {0, 2, 4};
-        for (int i = 0; i < rightUnits.length; i++) {
-            final int attackerIdx = (i * 2) + 1;
-            
-            rightUnits[i].getAttackBtn().addActionListener(new java.awt.event.ActionListener() {
-                public void actionPerformed(java.awt.event.ActionEvent e) {
-                    Player attacker = ps[attackerIdx];
-                    
-                    if (Main.checkDefeatTeam(ps)) {
-                        appendLog("이미 게임이 종료되었습니다.");
-                        return;
-                    }
-                    
-                    java.util.List<Integer> aliveTargets = new java.util.ArrayList<>();
-                    for (int idx : redTeamIndices) {
-                        if (ps[idx].isAlive()) {
-                            aliveTargets.add(idx);
-                        }
-                    }
-                    
-                    if (aliveTargets.isEmpty()) return;
-                    
-                    int targetIdx = aliveTargets.get(random.nextInt(aliveTargets.size()));
-                    Player target = ps[targetIdx];
-                    
-                    attacker.attack(target);
-                    
-                    appendLog("[BLUE] " + attacker.getName() + " -> [RED] " + target.getName() + " 공격!");
-                    updateAllTeams(ps);
-                    
-                    if (Main.checkDefeatTeam(ps)) {
-                        appendLog("\n[BLUE] 팀이 최종 승리했습니다! 게임 종료");
-                    }
-                }
-            });
-        }
-    }
 }

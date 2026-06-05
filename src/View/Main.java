@@ -1,4 +1,3 @@
-//Main.java (JFrame)
 package View;
 
 import java.util.Random;
@@ -63,7 +62,7 @@ public class Main {
         BattleView battleView = new BattleView();
         battleView.updateAllTeams(ps);
         
-        battleView.attack(ps);
+        new BattleController(ps, battleView);
 
         frame.add(battleView);
         frame.setVisible(true);

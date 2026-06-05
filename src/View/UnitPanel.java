@@ -2,6 +2,8 @@ package View;
 import javax.swing.*;
 import java.awt.*;
 import Player.Player;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class UnitPanel extends JPanel {
     private JLabel nameLabel;
@@ -9,13 +11,14 @@ public class UnitPanel extends JPanel {
     private JProgressBar hpBar;
     private JButton attackBtn;
     private Player player;
+    private Runnable onClickCallback;
 
     public UnitPanel() {
         setLayout(new BorderLayout(0, 5));
         setOpaque(false);
 
 
-        hpBar = new JProgressBar(0, 100);
+        hpBar = new JProgressBar(0, 200);
         hpBar.setStringPainted(true);
         hpBar.setForeground(new Color(76, 175, 80)); 
 
@@ -25,6 +28,15 @@ public class UnitPanel extends JPanel {
         imgLabel.setBackground(new Color(93, 64, 55)); 
         imgLabel.setForeground(Color.WHITE);
         imgLabel.setPreferredSize(new Dimension(110, 110)); 
+        
+        imgLabel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (onClickCallback != null && player != null && player.isAlive()) {
+                    onClickCallback.run();
+                }
+            }
+        });
 
         attackBtn = new JButton("공격");
 
@@ -48,6 +60,20 @@ public class UnitPanel extends JPanel {
             imgLabel.setText(player.getName() + " (사망)");
             attackBtn.setEnabled(false); 
         }
+    }
+    
+    public void setOnClickCallback(Runnable callback) {
+        this.onClickCallback = callback;
+    }
+
+    // 타겟 강조 (노란색)
+    public void setHighlight(boolean on) {
+        setBorder(on ? BorderFactory.createLineBorder(Color.YELLOW, 3) : null);
+    }
+
+    // 공격자 강조 (파란색)
+    public void setAttackerHighlight(boolean on) {
+        setBorder(on ? BorderFactory.createLineBorder(Color.CYAN, 3) : null);
     }
 
 
