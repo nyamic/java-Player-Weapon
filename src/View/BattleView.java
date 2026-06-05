@@ -90,6 +90,10 @@ public class BattleView extends JPanel {
         if (isLeft) leftUnits[index].setOnClickCallback(callback);
         else        rightUnits[index].setOnClickCallback(callback);
     }
+    
+    public void setOnWeaponBtnClicked(int index, Runnable callback) {
+        leftUnits[index].getWeaponBtn().addActionListener(e -> callback.run());
+    }
 
     // ㅡㅡㅡㅡㅡㅡㅡ 강조 표시 ㅡㅡㅡㅡㅡㅡㅡ
 
