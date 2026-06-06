@@ -56,6 +56,10 @@ public class 하비 extends Player{
 	public void 치유하기(Player player) {
 		System.out.println(this.getName() + "가 " + player.getName() + "의 hp를 100 회복시킵니다.");
 		player.setHp(player.getHp() + this.getPower());
+		if(player.getHp() >= 200) {
+			player.setHp(200);
+			System.out.println(player.getName() + "의 체력이 최대로 회복되어 더 이상 회복은 불가합니다.");
+		}
 	}
 	
 	public void 책읽기(BattleView view) {
