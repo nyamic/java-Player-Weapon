@@ -50,8 +50,10 @@ public class UnitPanel extends JPanel {
 
         nameLabel = new JLabel(player.getName()); 
         imgLabel.setText(player.getName());
-        hpBar.setValue(player.getHp());
-        hpBar.setString(player.getHp() + " / 200");
+        
+        int displayHp = Math.max(player.getHp(), 0);
+        hpBar.setValue(displayHp);
+        hpBar.setString(displayHp + " / 200");
         
         String imagePath = "image/" + player.getName();
         
@@ -85,9 +87,35 @@ public class UnitPanel extends JPanel {
         btnPanel.revalidate();
         btnPanel.repaint();
     }
+    
+    public void setOnClickCallback(Runnable callback) {
+        imgLabel.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        imgLabel.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent e) {
+                callback.run();
+            }
+        });
+    }
+    
+    public void setHighlight(boolean on) {
+        setBorder(on
+            ? BorderFactory.createLineBorder(new Color(255, 80, 80), 3)
+            : null);
+    }
+
+    public void setAttackerHighlight(boolean on) {
+        setBorder(on
+            ? BorderFactory.createLineBorder(new Color(80, 80, 255), 3)
+            : null);
+    }
 
 
     public JButton getAttackBtn() {
         return attackBtn;
+    }
+    
+    public JButton getWeaponBtn() {
+        return weaponBtn;
     }
 }
