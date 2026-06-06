@@ -186,7 +186,7 @@ public class BattleView extends JPanel {
             dialog.add(winLabel, BorderLayout.NORTH);
 
             JPanel imgPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 30, 10));
-            String teamColor = winnerTeam.equals("RED") ? "red" : "blue";
+            String teamColor = winnerTeam.equals("PIERRE") ? "red" : "blue";
 
             for (Player p : ps) {
                 if (!p.team.equals(teamColor)) continue;
