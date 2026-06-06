@@ -144,7 +144,7 @@ public class BattleView extends JPanel {
                 btnText += " (사용 완료)";
             }
             
-            JButton btn = new JButton(skills[i]);
+            JButton btn = new JButton(btnText);;
             
             if (player.isSkillUsed(skillIdx)) {
                 btn.setEnabled(false); 

@@ -90,6 +90,10 @@ public class 하비 extends Player{
             Player target = ps[idx];
             
             target.setHp(target.getHp() + 30);
+            if(target.getHp() >= 200) {
+    			target.setHp(200);
+    			System.out.println(target.getName() + "의 체력이 최대로 회복되어 더 이상 회복은 불가합니다.");
+    		}
         }
 
         view.updateAllTeams(ps);

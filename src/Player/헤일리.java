@@ -38,7 +38,7 @@ public class 헤일리 extends Player{
         for (int idx : aliveTargets) {
             Player target = ps[idx];
             
-            target.setHp(target.getHp() + 15);
+            target.setPower(target.getPower() + 15);
         }
 
         view.updateAllTeams(ps);		

@@ -66,11 +66,7 @@ public class 거스 extends Player {
 		target.applyBuff(new PowerBuff(this.getPower()));
 	}
 
-	public void 허허허사람좋은웃음짓기(BattleView view) {
-		view.appendLog("거스가 [허허허~ 사람좋은웃음짓기] 스킬을 사용했습니다.");
-		view.appendLog("거스 : 허허허~ 허허허~");
-		view.appendLog("거스의 웃음이 모두에게 힘을 줍니다. 팀원들의 hp가 30씩 상승합니다.");
-		
+	public void 허허허사람좋은웃음짓기(BattleView view) {		
 		Player[] ps = view.getAllPlayers();
 
         int[] enemyIndex = this.getMyTeamIndex(view);
@@ -82,13 +78,18 @@ public class 거스 extends Player {
             }
         }
 
-        // 스킬 로그 출력 및 광역 데미지 적용
-        view.appendLog("📸 [스킬 발동] " + getName() + "이(가) [사진 찍기]를 시전했습니다!");
+        view.appendLog("거스가 [허허허~ 사람좋은웃음짓기] 스킬을 사용했습니다.");
+		view.appendLog("거스 : 허허허~ 허허허~");
+		view.appendLog("거스의 웃음이 모두에게 힘을 줍니다. 팀원들의 hp가 30씩 상승합니다.");
         
         for (int idx : aliveTargets) {
             Player target = ps[idx];
             
             target.setHp(target.getHp() + 30);
+            if(target.getHp() >= 200) {
+    			target.setHp(200);
+    			System.out.println(target.getName() + "의 체력이 최대로 회복되어 더 이상 회복은 불가합니다.");
+    		}
         }
 
         view.updateAllTeams(ps);
