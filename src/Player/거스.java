@@ -2,9 +2,7 @@ package Player;
 
 import java.util.List;
 import java.util.Random;
-
 import View.BattleView;
-
 import java.util.ArrayList;
 
 public class 거스 extends Player {

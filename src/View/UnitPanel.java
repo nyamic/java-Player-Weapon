@@ -3,8 +3,6 @@ package View;
 import javax.swing.*;
 import java.awt.*;
 import Player.Player;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 
 public class UnitPanel extends JPanel {
     private JLabel nameLabel;
@@ -14,7 +12,6 @@ public class UnitPanel extends JPanel {
     private JButton weaponBtn;
     private JPanel btnPanel;
     private Player player;
-    private Runnable onClickCallback;
 
     public UnitPanel() {
         setLayout(new BorderLayout(0, 5));
@@ -32,15 +29,6 @@ public class UnitPanel extends JPanel {
         imgLabel.setBackground(new Color(93, 64, 55)); 
         imgLabel.setForeground(Color.WHITE);
         imgLabel.setPreferredSize(new Dimension(110, 110)); 
-        
-        imgLabel.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                if (onClickCallback != null && player != null && player.isAlive()) {
-                    onClickCallback.run();
-                }
-            }
-        });
 
         attackBtn = new JButton("공격");
         weaponBtn = new JButton("무기 공격");
@@ -62,8 +50,10 @@ public class UnitPanel extends JPanel {
 
         nameLabel = new JLabel(player.getName()); 
         imgLabel.setText(player.getName());
-        hpBar.setValue(player.getHp());
-        hpBar.setString(player.getHp() + " / 200");
+        
+        int displayHp = Math.max(player.getHp(), 0);
+        hpBar.setValue(displayHp);
+        hpBar.setString(displayHp + " / 200");
         
         String imagePath = "image/" + player.getName();
         
@@ -97,27 +87,35 @@ public class UnitPanel extends JPanel {
         btnPanel.revalidate();
         btnPanel.repaint();
     }
-
+    
     public void setOnClickCallback(Runnable callback) {
-        this.onClickCallback = callback;
+        imgLabel.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        imgLabel.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent e) {
+                callback.run();
+            }
+        });
     }
-
-    // 타겟 강조 (노란색)
+    
     public void setHighlight(boolean on) {
-        setBorder(on ? BorderFactory.createLineBorder(Color.YELLOW, 3) : null);
+        setBorder(on
+            ? BorderFactory.createLineBorder(new Color(255, 80, 80), 3)
+            : null);
     }
 
-    // 공격자 강조 (파란색)
     public void setAttackerHighlight(boolean on) {
-        setBorder(on ? BorderFactory.createLineBorder(Color.CYAN, 3) : null);
+        setBorder(on
+            ? BorderFactory.createLineBorder(new Color(80, 80, 255), 3)
+            : null);
     }
+
 
     public JButton getAttackBtn() {
         return attackBtn;
     }
-
-	public AbstractButton getWeaponBtn() {
-		// TODO Auto-generated method stub
-		return weaponBtn;
-	}
+    
+    public JButton getWeaponBtn() {
+        return weaponBtn;
+    }
 }

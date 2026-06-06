@@ -3,7 +3,6 @@ package View;
 import javax.swing.*;
 import java.awt.*;
 import Player.Player;
-import Player.로빈;
 
 public class BattleView extends JPanel {
     private UnitPanel[] leftUnits = new UnitPanel[3];
@@ -138,7 +137,17 @@ public class BattleView extends JPanel {
 
         for (int i = 0; i < skills.length; i++) {
             final int skillIdx = i;
+            
+            String btnText = skills[i];
+            if (player.isSkillUsed(skillIdx)) {
+                btnText += " (사용 완료)";
+            }
+            
             JButton btn = new JButton(skills[i]);
+            
+            if (player.isSkillUsed(skillIdx)) {
+                btn.setEnabled(false); 
+            }
             
             btn.addActionListener(e -> {
                 player.useSkill(skillIdx, this); 

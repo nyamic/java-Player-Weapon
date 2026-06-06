@@ -16,7 +16,6 @@ public class 레아 extends Player{
 	public 레아(String name, int power, int hp, Weapon weapon) {
 		super(name, hp, power);
 	}
-	
 	public void 사진찍기(BattleView view) {
         Player[] ps = view.getAllPlayers();
         if (ps == null) return;

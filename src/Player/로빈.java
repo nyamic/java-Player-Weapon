@@ -7,8 +7,6 @@ import View.BattleView;
 import Weapon.*;
 
 public class 로빈 extends Player{
-
-	
 	public 로빈() {}
 	
 	public 로빈(String name, int hp, int power) {
@@ -18,7 +16,7 @@ public class 로빈 extends Player{
 	public 로빈(String name, int power, int hp, Weapon weapon) {
 		super(name, hp, power);
 	}
-
+	
 	public void 가구만들기(BattleView view) {			
 		view.appendLog("로빈이 [가구 만들기] 스킬을 사용합니다.");
 		view.appendLog("로빈 : 안되겠어. 가구를 만들어서 방어막으로 사용해야겠어(뚝딱뚝딱)");

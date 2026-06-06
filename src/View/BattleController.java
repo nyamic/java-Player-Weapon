@@ -28,8 +28,6 @@ public class BattleController {
     private static final int[] LEFT_PS_IDX  = {0, 2, 4};
     private static final int[] RIGHT_PS_IDX = {1, 3, 5};
 
-	private static final String BattleView = null;
-
     private Player selectedAttacker = null;
     private int    selectedPanelIdx = -1; // 공격자 패널 인덱스 저장
 
@@ -39,7 +37,7 @@ public class BattleController {
         registerButtons();
         enterUserSelectAttacker();
     }
-    
+   
     private void isDanger(Player target, BattleView view) {
     	if(target.getHp() <= 100 && target.isAlive()) {
     		view.skillBoard(target, ps);
@@ -167,6 +165,7 @@ public class BattleController {
         performAttack(attacker, target, "[RED]", "[BLUE]");
         view.updateAllTeams(ps);
         isDanger(target, view);
+
         if (Main.checkDefeatTeam(ps)) { endGame("RED 팀 승리!"); return; }
         enterComputerTurn();
     }
@@ -214,7 +213,6 @@ public class BattleController {
             Player target = aliveTargets.get(random.nextInt(aliveTargets.size()));
             performAttack(attacker, target, "[BLUE]", "[RED]");
         }
-        
         view.updateAllTeams(ps);
         if (Main.checkDefeatTeam(ps)) { endGame("BLUE 팀 승리!"); return; }
         enterUserSelectAttacker();

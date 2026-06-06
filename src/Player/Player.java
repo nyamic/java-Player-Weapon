@@ -12,6 +12,7 @@ public class Player implements Attackable {
     protected int basePower; //기본공격력
     private PowerBuff activeBuff = null;  // 현재 걸린 버프
     public String team;
+    private boolean[] isSkillUsed;
     
     public Player() {
     		System.out.println("플레이어 생성!");
@@ -133,15 +134,27 @@ public class Player implements Attackable {
 	        return new int[]{1, 3, 5};
 	    }
 	}
+	
+	public boolean isSkillUsed(int skillIdx) {
+        if (isSkillUsed == null) {
+            isSkillUsed = new boolean[getSkillNames().length];
+        }
+        return isSkillUsed[skillIdx];
+    }
+	
+	public void setSkillUsed(int skillIdx, boolean used) {
+        if (isSkillUsed == null) {
+            isSkillUsed = new boolean[getSkillNames().length];
+        }
+        this.isSkillUsed[skillIdx] = used;
+    }
+	
+	public String[] getSkillNames() { return new String[0]; }
 
 	//플레이어 생존 확인 메서드
 	public boolean isAlive() {
 		return this.hp > 0;
 	}
-	
-	public String[] getSkillNames() {
-        return new String[]{"기본 스킬 1", "기본 스킬 2"};
-    }
 	
 	public void useSkill(int skillIndex, BattleView view) {
     }

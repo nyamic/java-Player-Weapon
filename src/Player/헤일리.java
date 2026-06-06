@@ -2,7 +2,6 @@ package Player;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import View.BattleView;
 
 public class 헤일리 extends Player{

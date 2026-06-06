@@ -1,7 +1,6 @@
 package Player;
 
 import Weapon.Weapon;
-import View.BattleView;
 
 public interface Attackable {
 
