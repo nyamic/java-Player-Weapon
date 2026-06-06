@@ -38,10 +38,31 @@ public class BattleController {
         enterUserSelectAttacker();
     }
    
-    private void isDanger(Player target, BattleView view) {
-    	if(target.getHp() <= 100 && target.isAlive()) {
-    		view.skillBoard(target, ps);
-    	}
+    private void isDanger(Player target, BattleView view, boolean isUserTeam, Runnable onComplete) {
+    	if (target.getHp() <= 100 && target.isAlive()) {
+            if (isUserTeam) {
+                view.skillBoard(target, ps, onComplete);
+            } else {
+                autoUseSkill(target, onComplete);
+            }
+        } else {
+            onComplete.run();
+        }
+    }
+    
+    private void autoUseSkill(Player target, Runnable onComplete) {
+        String[] skills = target.getSkillNames();
+        List<Integer> available = new ArrayList<>();
+        for (int i = 0; i < skills.length; i++) {
+            if (!target.isSkillUsed(i)) available.add(i);
+        }
+        if (!available.isEmpty()) {
+            int skillIdx = available.get(random.nextInt(available.size()));
+            target.useSkill(skillIdx, view);
+            view.appendLog("[BLUE] " + target.getName() + " 스킬 [" + skills[skillIdx] + "] 자동 발동!");
+            view.updateAllTeams(ps);
+        }
+        onComplete.run();
     }
 
     // ㅡㅡㅡㅡㅡㅡ 버튼/클릭 콜백 등록 ㅡㅡㅡㅡㅡㅡ
@@ -164,10 +185,8 @@ public class BattleController {
         checkAndConvertIfNeeded(attacker, "red");
         performAttack(attacker, target, "[RED]", "[BLUE]");
         view.updateAllTeams(ps);
-        isDanger(target, view);
-
         if (Main.checkDefeatTeam(ps)) { endGame("RED 팀 승리!"); return; }
-        enterComputerTurn();
+        isDanger(target, view, false, () -> enterComputerTurn());
     }
 
     // 무기 공격 실행 (일회용)
@@ -182,9 +201,8 @@ public class BattleController {
         attacker.setWeapon(null); // 무기 소진 (일회용)
 
         view.updateAllTeams(ps);
-        isDanger(target, view);
         if (Main.checkDefeatTeam(ps)) { endGame("RED 팀 승리!"); return; }
-        enterComputerTurn();
+        isDanger(target, view, false, () -> enterComputerTurn());
     }
 
     private void executeComputerAttack() {
@@ -194,6 +212,8 @@ public class BattleController {
         Player attacker = aliveAttackers.get(random.nextInt(aliveAttackers.size()));
         checkAndConvertIfNeeded(attacker, "blue");
 
+        Player target = null;
+
         if (isSupporter(attacker)) {
             if (!isDealerMode(attacker)) {
                 attacker.useSkill(ps, null);
@@ -201,7 +221,7 @@ public class BattleController {
             } else {
                 List<Player> aliveTargets = getAlivePlayers(LEFT_PS_IDX);
                 if (aliveTargets.isEmpty()) return;
-                Player target = aliveTargets.get(random.nextInt(aliveTargets.size()));
+                target = aliveTargets.get(random.nextInt(aliveTargets.size()));
                 attacker.useSkill(ps, target);
                 view.appendLog("[BLUE] " + attacker.getName()
                         + " → [RED] " + target.getName()
@@ -210,12 +230,19 @@ public class BattleController {
         } else {
             List<Player> aliveTargets = getAlivePlayers(LEFT_PS_IDX);
             if (aliveTargets.isEmpty()) return;
-            Player target = aliveTargets.get(random.nextInt(aliveTargets.size()));
+            target = aliveTargets.get(random.nextInt(aliveTargets.size()));
             performAttack(attacker, target, "[BLUE]", "[RED]");
         }
+
         view.updateAllTeams(ps);
         if (Main.checkDefeatTeam(ps)) { endGame("BLUE 팀 승리!"); return; }
-        enterUserSelectAttacker();
+
+        if (target != null) {
+            final Player finalTarget = target;
+            isDanger(finalTarget, view, true, () -> enterUserSelectAttacker());
+        } else {
+            enterUserSelectAttacker();
+        }
     }
 
     private void performAttack(Player attacker, Player target,
@@ -237,7 +264,7 @@ public class BattleController {
                 + " → [RED] " + target.getName() + " 스킬 사용!");
         view.updateAllTeams(ps);
         if (Main.checkDefeatTeam(ps)) { endGame("RED 팀 승리!"); return; }
-        enterComputerTurn();
+        isDanger(target, view, true, () -> enterComputerTurn());
     }
 
     // ㅡㅡㅡㅡㅡㅡ 하비/거스 딜러 전환 ㅡㅡㅡㅡㅡㅡ

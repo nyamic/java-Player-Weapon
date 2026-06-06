@@ -120,12 +120,13 @@ public class BattleView extends JPanel {
     }
     
     
-    public void skillBoard(Player player, Player[] ps) {
-        JFrame skillFrame = new JFrame("✨ " + player.getName() + "의 스킬 발동!");
+    public void skillBoard(Player player, Player[] ps, Runnable onComplete) {
+    	Frame parentFrame = (Frame) SwingUtilities.getWindowAncestor(this);
+        JDialog skillFrame = new JDialog(parentFrame, "✨ " + player.getName() + "의 스킬 발동!", true);
         skillFrame.setSize(400, 160);
         skillFrame.setLayout(new BorderLayout(10, 10));
         skillFrame.setLocationRelativeTo(this);
-        skillFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        skillFrame.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 
         JLabel label = new JLabel("⚠️ " + player.getName() + "의 HP가 100 이하입니다!", SwingConstants.CENTER);
         skillFrame.add(label, BorderLayout.NORTH);
@@ -151,12 +152,20 @@ public class BattleView extends JPanel {
             
             btn.addActionListener(e -> {
                 player.useSkill(skillIdx, this); 
-                
                 updateAllTeams(ps);
                 skillFrame.dispose();
+                onComplete.run();
             });
             buttonPanel.add(btn);
         }
+        
+        skillFrame.addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosed(java.awt.event.WindowEvent e) {
+                onComplete.run();
+            }
+        });
+
 
         skillFrame.add(buttonPanel, BorderLayout.CENTER);
         skillFrame.setVisible(true);
