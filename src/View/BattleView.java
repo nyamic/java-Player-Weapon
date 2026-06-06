@@ -167,20 +167,16 @@ public class BattleView extends JPanel {
 
         for (int i = 0; i < skills.length; i++) {
             final int skillIdx = i;
-            
-            String btnText = skills[i];
-            if (player.isSkillUsed(skillIdx)) {
-                btnText += " (사용 완료)";
-            }
-            
-            JButton btn = new JButton(btnText);;
+
+            JButton btn = new JButton(skills[i]);;
             
             if (player.isSkillUsed(skillIdx)) {
-                btn.setEnabled(false); 
+                btn.setText(skills[i] + " (사용 완료)");
+                btn.setEnabled(false);
             }
             
             btn.addActionListener(e -> {
-                player.useSkill(skillIdx, this); 
+                player.useSkill(skillIdx, this);
                 updateAllTeams(ps);
                 skillFrame.dispose();
                 onComplete.run();

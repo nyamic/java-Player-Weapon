@@ -59,10 +59,17 @@ public class 로빈 extends Player{
 
     @Override
     public void useSkill(int skillIndex, BattleView view) {
+    	if (isSkillUsed(skillIndex)) {
+            view.appendLog("이미 사용한 스킬입니다!", "reset");
+            return;
+    	}
+    	
         if (skillIndex == 0) {
             가구만들기(view);
         } else if (skillIndex == 1) {
             장작패기(view);
         }
+        
+        setSkillUsed(skillIndex, true);
     }
 }

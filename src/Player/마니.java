@@ -44,11 +44,18 @@ public class 마니 extends Player{
 
     @Override
     public void useSkill(int skillIndex, BattleView view) {
+    	if (isSkillUsed(skillIndex)) {
+            view.appendLog("이미 사용한 스킬입니다!", "reset");
+            return;
+        }
+
         if (skillIndex == 0) {
             밥주기(view);
         } else if (skillIndex == 1) {
             아이들놀아주기(view);
         }
+        
+        setSkillUsed(skillIndex, true);
     }
 
 }

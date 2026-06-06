@@ -50,11 +50,18 @@ public class 헤일리 extends Player{
 
     @Override
     public void useSkill(int skillIndex, BattleView view) {
+    	if (isSkillUsed(skillIndex)) {
+            view.appendLog("이미 사용한 스킬입니다!", "reset");
+            return;
+        }
+    	
         if (skillIndex == 0) {
             머리빗기(view);
         } else if (skillIndex == 1) {
             거울보기(view);
         }
+        
+        setSkillUsed(skillIndex, true);
     }
 	
 }

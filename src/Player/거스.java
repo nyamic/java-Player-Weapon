@@ -114,11 +114,18 @@ public class 거스 extends Player {
 
     @Override
     public void useSkill(int skillIndex, BattleView view) {
+    	if (isSkillUsed(skillIndex)) {
+            view.appendLog("이미 사용한 스킬입니다!", "reset");
+            return;
+        }
+    	
         if (skillIndex == 0) {
             허허허사람좋은웃음짓기(view);
         } else if (skillIndex == 1) {
             주점운영하기(view);
         }
+        
+        setSkillUsed(skillIndex, true);
     }
 
 }

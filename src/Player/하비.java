@@ -108,11 +108,18 @@ public class 하비 extends Player{
 
     @Override
     public void useSkill(int skillIndex, BattleView view) {
+    	if (isSkillUsed(skillIndex)) {
+            view.appendLog("이미 사용한 스킬입니다!", "reset");
+            return;
+        }
+    	
         if (skillIndex == 0) {
             책읽기(view);
         } else if (skillIndex == 1) {
             공부하기(view);
         }
+        
+        setSkillUsed(skillIndex, true);
     }
 
 }

@@ -56,11 +56,18 @@ public class 레아 extends Player{
 
     @Override
     public void useSkill(int skillIndex, BattleView view) {
+    	if (isSkillUsed(skillIndex)) {
+            view.appendLog("이미 사용한 스킬입니다!", "reset");
+            return;
+        }
+
         if (skillIndex == 0) {
             사진찍기(view);
         } else if (skillIndex == 1) {
             카메라청소하기(view);
         }
+        
+        setSkillUsed(skillIndex, true);
     }
 	
 }
