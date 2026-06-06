@@ -3,12 +3,21 @@ package View;
 import javax.swing.*;
 import java.awt.*;
 import Player.Player;
+import javax.swing.text.AttributeSet;
+import javax.swing.text.SimpleAttributeSet;
+import javax.swing.text.StyleConstants;
+import javax.swing.text.StyleContext;
+import java.awt.Color;
 
 public class BattleView extends JPanel {
     private UnitPanel[] leftUnits = new UnitPanel[3];
     private UnitPanel[] rightUnits = new UnitPanel[3];
-    private JTextArea console;
+    private JTextPane console;
     private Player[] allPlayers;
+    
+    public static final String reset = "\u001B[0m";
+    public static final String red = "\u001B[31m";      // 빨강
+    public static final String blue = "\u001B[34m";     // 파랑
 
     public BattleView() {
         setLayout(new BorderLayout(25, 0));
@@ -44,7 +53,7 @@ public class BattleView extends JPanel {
         }
         eastContainer.add(eastPanel, BorderLayout.CENTER);
 
-        console = new JTextArea("베틀 로그 창\n\n");
+        console = new JTextPane();
         console.setEditable(false);
         console.setFont(new Font("굴림", Font.PLAIN, 12));
 
@@ -74,9 +83,29 @@ public class BattleView extends JPanel {
         return this.allPlayers;
     }
 
-    public void appendLog(String msg) {
-        console.append(msg + "\n");
-        console.setCaretPosition(console.getDocument().getLength());
+    public void appendLog(String msg, String color) {
+    	StyleContext sc = StyleContext.getDefaultStyleContext();
+        Color textFolderColor;
+
+        // 1. 소문자 "red", "blue"에 맞춰서 진짜 자바 Color 객체로 변환하기
+        if (color.equalsIgnoreCase("red")) {
+            textFolderColor = Color.RED;
+        } else if (color.equalsIgnoreCase("blue")) {
+            textFolderColor = Color.BLUE;
+        } else {
+            textFolderColor = Color.BLACK; // 팀이 없거나 시스템 메시지면 기본 검은색!
+        }
+    	AttributeSet aset = sc.addAttribute(SimpleAttributeSet.EMPTY, StyleConstants.Foreground, textFolderColor);
+    	
+    	int len = console.getDocument().getLength();
+        console.setCaretPosition(len);
+        
+        try {
+            // 색상이 입혀진 글자를 로그창 맨 뒤에 쏙 밀어 넣기
+            console.getDocument().insertString(len, msg + "\n", aset);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     // 모든 패널 강조 초기화
@@ -212,7 +241,11 @@ public class BattleView extends JPanel {
 
             JButton closeBtn = new JButton("게임 종료하기");
             closeBtn.setFont(new Font("굴림", Font.PLAIN, 13));
-            closeBtn.addActionListener(e -> dialog.dispose());
+            closeBtn.addActionListener(e -> {
+            	dialog.dispose();
+            	System.exit(0);
+            });
+            
             JPanel btnPanel = new JPanel();
             btnPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 15, 0));
             btnPanel.add(closeBtn);

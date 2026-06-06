@@ -10,10 +10,10 @@ public class 마니 extends Player{
 	}
 
 	public void 밥주기(BattleView view) {
-		view.appendLog("마니가 [동물 밥주기] 스킬을 사용했습니다.");
-		view.appendLog("소 : 음메(너무 맛있어서 행복하소)");
-		view.appendLog("마니 : 소가 행복해하니까 나도 행복해진다 >_<");
-		view.appendLog("마니가 행복해져서 힘이 더 세졌습니다. 마니의 power가 15 증가합니다.");
+		view.appendLog("마니가 [동물 밥주기] 스킬을 사용했습니다.", "reset");
+		view.appendLog("소 : 음메(너무 맛있어서 행복하소)", "reset");
+		view.appendLog("마니 : 소가 행복해하니까 나도 행복해진다 >_<", "reset");
+		view.appendLog("마니가 행복해져서 힘이 더 세졌습니다. 마니의 power가 15 증가합니다.", "reset");
 		
 		this.setPower(this.getPower() + 15);
 	}
@@ -31,9 +31,9 @@ public class 마니 extends Player{
             }
         }
 
-		view.appendLog("마니가 [아이들 놀아주기] 스킬을 사용했습니다.");
-		view.appendLog("아이들 : 마니 이모 괴롭히지마!");
-		view.appendLog("아이들이 자신들을 놀아준 마니가 공격을 당하자 화가 났습니다. 상대 팀원 중 한 명에게 40의 데미지를 입힙니다.");
+		view.appendLog("마니가 [아이들 놀아주기] 스킬을 사용했습니다.", "reset");
+		view.appendLog("아이들 : 마니 이모 괴롭히지마!", "reset");
+		view.appendLog("아이들이 자신들을 놀아준 마니가 공격을 당하자 화가 났습니다. 상대 팀원 중 한 명에게 40의 데미지를 입힙니다.", "reset");
 
         view.updateAllTeams(ps);
 	}

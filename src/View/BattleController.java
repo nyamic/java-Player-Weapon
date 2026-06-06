@@ -59,7 +59,7 @@ public class BattleController {
         if (!available.isEmpty()) {
             int skillIdx = available.get(random.nextInt(available.size()));
             target.useSkill(skillIdx, view);
-            view.appendLog("[BLUE] " + target.getName() + " 스킬 [" + skills[skillIdx] + "] 자동 발동!");
+            view.appendLog("[BLUE] " + target.getName() + " 스킬 [" + skills[skillIdx] + "] 자동 발동!", target.team);
             view.updateAllTeams(ps);
         }
         onComplete.run();
@@ -88,7 +88,7 @@ public class BattleController {
         selectedAttacker = null;
         selectedPanelIdx = -1;
         view.clearAllHighlights();
-        view.appendLog("[USER] 공격할 캐릭터의 [공격] 버튼을 누르세요.");
+        view.appendLog("[USER] 공격할 캐릭터의 [공격] 버튼을 누르세요.", "reset");
     }
 
     private void enterUserSelectTarget(int panelIdx) {
@@ -96,7 +96,7 @@ public class BattleController {
         selectedPanelIdx = panelIdx;
         view.highlightAsAttacker(panelIdx);
         view.highlightAllEnemies();
-        view.appendLog("[USER] 공격할 대상 캐릭터를 클릭하세요.");
+        view.appendLog("[USER] 공격할 대상 캐릭터를 클릭하세요.", "reset");
     }
 
     private void enterUserSelectWeaponTarget(int panelIdx) {
@@ -104,7 +104,7 @@ public class BattleController {
         selectedPanelIdx = panelIdx;
         view.highlightAsAttacker(panelIdx);
         view.highlightAllEnemies();
-        view.appendLog("[USER] 무기 공격할 대상 캐릭터를 클릭하세요.");
+        view.appendLog("[USER] 무기 공격할 대상 캐릭터를 클릭하세요.", "reset");
     }
 
     private void enterUserSelectAlly(int panelIdx) {
@@ -112,13 +112,13 @@ public class BattleController {
         selectedPanelIdx = panelIdx;
         view.highlightAsAttacker(panelIdx);
         view.highlightAllAllies(panelIdx);
-        view.appendLog("[USER] 스킬을 사용할 아군 캐릭터를 클릭하세요.");
+        view.appendLog("[USER] 스킬을 사용할 아군 캐릭터를 클릭하세요.", "reset");
     }
 
     private void enterComputerTurn() {
         state = TurnState.COMPUTER_TURN;
         view.clearAllHighlights();
-        view.appendLog("[COMPUTER] 자동 공격 중...");
+        view.appendLog("[COMPUTER] 자동 공격 중...", "reset");
 
         Timer timer = new Timer(1000, e -> {
             ((Timer) e.getSource()).stop();
@@ -196,7 +196,7 @@ public class BattleController {
         attacker.attack(target, attacker.getWeapon());
         view.appendLog("[RED] " + attacker.getName()
                 + " → [BLUE] " + target.getName()
-                + " 무기 공격! (남은 HP: " + Math.max(target.getHp(), 0) + ")");
+                + " 무기 공격! (남은 HP: " + Math.max(target.getHp(), 0) + ")", attacker.team);
 
         attacker.setWeapon(null); // 무기 소진 (일회용)
 
@@ -210,14 +210,14 @@ public class BattleController {
         if (aliveAttackers.isEmpty()) return;
 
         Player attacker = aliveAttackers.get(random.nextInt(aliveAttackers.size()));
-        checkAndConvertIfNeeded(attacker, "blue");
+        checkAndConvertIfNeeded(attacker, attacker.team);
 
         Player target = null;
 
         if (isSupporter(attacker)) {
             if (!isDealerMode(attacker)) {
                 attacker.useSkill(ps, null);
-                view.appendLog("[BLUE] " + attacker.getName() + " 스킬 사용!");
+                view.appendLog("[BLUE] " + attacker.getName() + " 스킬 사용!", attacker.team);
             } else {
                 List<Player> aliveTargets = getAlivePlayers(LEFT_PS_IDX);
                 if (aliveTargets.isEmpty()) return;
@@ -225,7 +225,7 @@ public class BattleController {
                 attacker.useSkill(ps, target);
                 view.appendLog("[BLUE] " + attacker.getName()
                         + " → [RED] " + target.getName()
-                        + " 공격! (남은 HP: " + Math.max(target.getHp(), 0) + ")");
+                        + " 공격! (남은 HP: " + Math.max(target.getHp(), 0) + ")", attacker.team);
             }
         } else {
             List<Player> aliveTargets = getAlivePlayers(LEFT_PS_IDX);
@@ -254,14 +254,14 @@ public class BattleController {
         }
         view.appendLog(attackerTag + " " + attacker.getName()
                 + " → " + targetTag + " " + target.getName()
-                + " 공격! (남은 HP: " + Math.max(target.getHp(), 0) + ")");
+                + " 공격! (남은 HP: " + Math.max(target.getHp(), 0) + ")", attacker.team);
     }
 
     private void executeUserSkill(Player attacker, Player target) {
         checkAndConvertIfNeeded(attacker, "red");
         attacker.useSkill(ps, target);
         view.appendLog("[RED] " + attacker.getName()
-                + " → [RED] " + target.getName() + " 스킬 사용!");
+                + " → [RED] " + target.getName() + " 스킬 사용!", attacker.team);
         view.updateAllTeams(ps);
         if (Main.checkDefeatTeam(ps)) { endGame("RED 팀 승리!"); return; }
         isDanger(target, view, true, () -> enterComputerTurn());
@@ -273,10 +273,10 @@ public class BattleController {
         if (!Player.hasNormalAttacker(ps, team)) {
             if (attacker instanceof 하비 && !((하비) attacker).isDamageDealer()) {
                 ((하비) attacker).convertToDamageDealer();
-                view.appendLog("⚔️ " + attacker.getName() + " 딜러로 전환!");
+                view.appendLog("⚔️ " + attacker.getName() + " 딜러로 전환!", "reset");
             } else if (attacker instanceof 거스 && !((거스) attacker).isDamageDealer()) {
                 ((거스) attacker).convertToDamageDealer();
-                view.appendLog("⚔️ " + attacker.getName() + " 딜러로 전환!");
+                view.appendLog("⚔️ " + attacker.getName() + " 딜러로 전환!", "reset");
             }
         }
     }
@@ -286,7 +286,7 @@ public class BattleController {
     private void endGame(String msg) {
         state = TurnState.GAME_OVER;
         view.clearAllHighlights();
-        view.appendLog("\n" + msg + " 게임 종료.");
+        view.appendLog("\n" + msg + " 게임 종료.", "reset");
         
         String winnerTeam = msg.contains("RED") ? "PIERRE" : "JOJA";
         view.showWinner(ps, winnerTeam);

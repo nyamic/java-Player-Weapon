@@ -29,9 +29,9 @@ public class 레아 extends Player{
             }
         }
 
-        view.appendLog("레아가 [사진찍기] 스킬을 사용했습니다.");
-		view.appendLog("레아 : 찰칵찰칵! 역시 플래시를 켜고 사진을 찍어야 감성있어~!");
-		view.appendLog("레아의 플래시가 상대팀을 눈을 아프게 합니다. 모든 상태팀의 hp가 " + cameraPower + "씩 감소합니다.");
+        view.appendLog("레아가 [사진찍기] 스킬을 사용했습니다.", "reset");
+		view.appendLog("레아 : 찰칵찰칵! 역시 플래시를 켜고 사진을 찍어야 감성있어~!", "reset");
+		view.appendLog("레아의 플래시가 상대팀을 눈을 아프게 합니다. 모든 상태팀의 hp가 " + cameraPower + "씩 감소합니다.", "reset");
 		
         for (int idx : aliveTargets) {
             Player target = ps[idx];
@@ -43,9 +43,9 @@ public class 레아 extends Player{
 	}
 
 	public void 카메라청소하기(BattleView view) {
-		view.appendLog("레아가 [카메라청소하기] 스킬을 사용했습니다.");
-		view.appendLog("레아 : 쓱싹쓱싹~ 카메라를 청소했으니까 플래시가 더 잘 터지겠지?!");
-		view.appendLog("레아의 청소 덕분에 플래시의 위력이 커졌습니다. 사진찍기 스킬 파워가 10 증가합니다.");
+		view.appendLog("레아가 [카메라청소하기] 스킬을 사용했습니다.", "reset");
+		view.appendLog("레아 : 쓱싹쓱싹~ 카메라를 청소했으니까 플래시가 더 잘 터지겠지?!", "reset");
+		view.appendLog("레아의 청소 덕분에 플래시의 위력이 커졌습니다. 사진찍기 스킬 파워가 10 증가합니다.", "reset");
 		
 		cameraPower += 10;
 	}

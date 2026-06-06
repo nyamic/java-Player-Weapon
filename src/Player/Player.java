@@ -14,12 +14,16 @@ public class Player implements Attackable {
     public String team;
     private boolean[] isSkillUsed;
     
+    private final BattleView view;
+    
     public Player() {
-    		System.out.println("플레이어 생성!");
+    		this.view = new BattleView();
+			System.out.println("플레이어 생성!");
     }
     
     public Player(String name, int hp, int power) {
-    		System.out.println("플레이어 생성!");
+    		this.view = new BattleView();
+			System.out.println("플레이어 생성!");
     		this.name = name;
     		this.basePower = power;
     		this.hp = hp;
@@ -37,14 +41,12 @@ public class Player implements Attackable {
 
     public void applyBuff(PowerBuff buff) {
         this.activeBuff = buff;
-        System.out.println(name + ": 버프 +" + buff.getAmount() + " 적용됨");
+        view.appendLog(name + ": 버프 +" + buff.getAmount() + " 적용됨", "reset");
         this.setPower(basePower + buff.getAmount());
     }
     
     public void attack(Player target) {
         basePower = getEffectivePower();
-        
-        System.out.println(this.getName() + "가 " + target + "을 공격합니다.");
         
         target.setHp(target.getHp() - this.basePower);
 
@@ -57,11 +59,9 @@ public class Player implements Attackable {
 		int damage = weapon.getFinalDamage();
 
 		if (weapon.isLastHitCrit()) {
-			System.out.printf("치명타! %s 가 %s 를 %d 데미지로 강타합니다! (%.0f%% 데미지배율)",
-					this.getName(), target.getName(), damage, weapon.getCritMultiplier() * 100);
+			view.appendLog("치명타! " + this.getName() + " 가 " + target.getName() + " 를 " + damage + " 데미지로 강타합니다! (" + weapon.getCritMultiplier() * 100 + "% 데미지배율)", "reset");
 		} else {
-			System.out.printf("%s 가 %s 로 %s 를 %d 데미지로 공격합니다.",
-					this.getName(), weapon.getName(), target.getName(), damage);
+			view.appendLog(this.getName() + " 가 " + weapon.getName() + " 로 " + target.getName() + " 를 " + damage + " 데미지로 공격합니다.", "reset");
 		}
 		target.setHp(target.getHp() - damage);
     }
@@ -183,24 +183,4 @@ public class Player implements Attackable {
 	public void setPower(int power) {
 		this.basePower = power;
 	}
-
-	//한 플레이어 정보보기
-    public void showStatus() {
-    		System.out.printf("%s(%3d)", this.getName(), this.basePower);
-    		for(int i = 0; i < this.hp / 10; i++) {
-    			System.out.print("#");
-    		}
-    		System.out.println();
-    }
-    
-    //여러 플레이어 정보보기
-    public static void showStatus(Player[] player) {
-		for (Player p : player) {
-			if (p.isAlive()) {  // 살아있는 캐릭터만 출력
-				System.out.println(p.getName() + " | HP: " + p.getHp() + " | Team: " + p.team);
-			}
-		}
-    }
-    
-    
 }
