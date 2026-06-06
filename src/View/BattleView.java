@@ -15,9 +15,9 @@ public class BattleView extends JPanel {
     private JTextPane console;
     private Player[] allPlayers;
     
-    public static final String reset = "\u001B[0m";
-    public static final String red = "\u001B[31m";      // 빨강
-    public static final String blue = "\u001B[34m";     // 파랑
+    public static final String reset = "\u001B[0m";		//검정
+    public static final String pierre = "\u001B[31m";      // 빨강
+    public static final String joja = "\u001B[34m";     // 파랑
 
     public BattleView() {
         setLayout(new BorderLayout(25, 0));
@@ -54,6 +54,7 @@ public class BattleView extends JPanel {
         eastContainer.add(eastPanel, BorderLayout.CENTER);
 
         console = new JTextPane();
+        console.setText("배틀 로그 창\n\n");
         console.setEditable(false);
         console.setFont(new Font("굴림", Font.PLAIN, 12));
 
@@ -88,9 +89,9 @@ public class BattleView extends JPanel {
         Color textFolderColor;
 
         // 1. 소문자 "red", "blue"에 맞춰서 진짜 자바 Color 객체로 변환하기
-        if (color.equalsIgnoreCase("red")) {
+        if (color.equalsIgnoreCase("pierre")) {
             textFolderColor = Color.RED;
-        } else if (color.equalsIgnoreCase("blue")) {
+        } else if (color.equalsIgnoreCase("joja")) {
             textFolderColor = Color.BLUE;
         } else {
             textFolderColor = Color.BLACK; // 팀이 없거나 시스템 메시지면 기본 검은색!
@@ -167,7 +168,7 @@ public class BattleView extends JPanel {
 
         for (int i = 0; i < skills.length; i++) {
             final int skillIdx = i;
-
+            
             JButton btn = new JButton(skills[i]);;
             
             if (player.isSkillUsed(skillIdx)) {
@@ -182,6 +183,7 @@ public class BattleView extends JPanel {
                 onComplete.run();
             });
             buttonPanel.add(btn);
+
         }
         
         skillFrame.addWindowListener(new java.awt.event.WindowAdapter() {
@@ -198,56 +200,67 @@ public class BattleView extends JPanel {
     
     // ㅡㅡㅡㅡㅡㅡ 승패 판정 표시 ㅡㅡㅡㅡㅡㅡ
     public void showWinner(Player[] ps, String winnerTeam) {
-        SwingUtilities.invokeLater(() -> {
-            Frame parentFrame = (Frame) SwingUtilities.getWindowAncestor(this);
-            JDialog dialog = new JDialog(parentFrame, "배틀 종료", true);
-            dialog.setLayout(new BorderLayout(10, 10));
-            dialog.setSize(500, 400);
-            dialog.setLocationRelativeTo(parentFrame);
+    	SwingUtilities.invokeLater(() -> {
+            
+            removeAll();
+            setLayout(new BorderLayout());
 
-            JLabel winLabel = new JLabel("Team " + winnerTeam + " Win!", SwingConstants.CENTER);
-            winLabel.setFont(new Font("Arial", Font.BOLD, 36));
-            winLabel.setBorder(BorderFactory.createEmptyBorder(20, 0, 10, 0));
-            dialog.add(winLabel, BorderLayout.NORTH);
+            setBackground(new Color(30, 30, 30));
+            setOpaque(true);
 
-            JPanel imgPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 30, 10));
-            String teamColor = winnerTeam.equals("PIERRE") ? "red" : "blue";
+            // 승리 팀 타이틀
+            JLabel winLabel = new JLabel("Team " + winnerTeam + "  Win!", SwingConstants.CENTER);
+            winLabel.setFont(new Font("Arial", Font.BOLD, 48));
+            winLabel.setForeground(Color.YELLOW);
+            winLabel.setBorder(BorderFactory.createEmptyBorder(40, 0, 20, 0));
+            add(winLabel, BorderLayout.NORTH);
 
+            // 승리 팀 캐릭터 이미지
+            JPanel imgPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 40, 20));
+            imgPanel.setOpaque(false);
+
+            String teamColor = winnerTeam.equalsIgnoreCase("PIERRE") ? "pierre" : "joja";
             for (Player p : ps) {
                 if (!p.team.equals(teamColor)) continue;
 
                 JPanel card = new JPanel();
                 card.setLayout(new BoxLayout(card, BoxLayout.Y_AXIS));
+                card.setOpaque(false);
 
                 String path = "image/" + p.getName() + ".png";
                 ImageIcon raw = new ImageIcon(path);
-                JLabel img = new JLabel(new ImageIcon(raw.getImage().getScaledInstance(90, 90, Image.SCALE_SMOOTH)));
+                JLabel img = new JLabel(new ImageIcon(
+                    raw.getImage().getScaledInstance(120, 120, Image.SCALE_SMOOTH)));
                 img.setAlignmentX(Component.CENTER_ALIGNMENT);
 
                 JLabel name = new JLabel(p.getName());
-                name.setFont(new Font("굴림", Font.BOLD, 14));
+                name.setFont(new Font("굴림", Font.BOLD, 16));
+                name.setForeground(Color.WHITE);
                 name.setAlignmentX(Component.CENTER_ALIGNMENT);
 
                 card.add(img);
-                card.add(Box.createVerticalStrut(5));
+                card.add(Box.createVerticalStrut(8));
                 card.add(name);
                 imgPanel.add(card);
             }
-            dialog.add(imgPanel, BorderLayout.CENTER);
+            JPanel centerWrapper = new JPanel(new GridBagLayout());
+            centerWrapper.setOpaque(false);
+            centerWrapper.add(imgPanel);
+            add(centerWrapper, BorderLayout.CENTER);
 
-            JButton closeBtn = new JButton("게임 종료하기");
-            closeBtn.setFont(new Font("굴림", Font.PLAIN, 13));
-            closeBtn.addActionListener(e -> {
-            	dialog.dispose();
-            	System.exit(0);
-            });
-            
+            // 종료 버튼
+            JButton closeBtn = new JButton("게임 종료");
+            closeBtn.setFont(new Font("굴림", Font.BOLD, 16));
+            closeBtn.addActionListener(e -> System.exit(0));
+
             JPanel btnPanel = new JPanel();
-            btnPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 15, 0));
+            btnPanel.setOpaque(false);
+            btnPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 40, 0));
             btnPanel.add(closeBtn);
-            dialog.add(btnPanel, BorderLayout.SOUTH);
+            add(btnPanel, BorderLayout.SOUTH);
 
-            dialog.setVisible(true);
+            revalidate();
+            repaint();
         });
     }
     
