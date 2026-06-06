@@ -13,7 +13,7 @@ public class BattleController {
 
     private enum TurnState {
         USER_SELECT_ATTACKER,
-        USER_SELECT_TARGET,       // 일반 공격 타겟 선택
+        USER_SELECT_TARGET,        // 일반 공격 타겟 선택
         USER_SELECT_WEAPON_TARGET, // 무기 공격 타겟 선택
         COMPUTER_TURN,
         GAME_OVER
@@ -39,7 +39,7 @@ public class BattleController {
     }
    
     private void isDanger(Player target, BattleView view, boolean isUserTeam, Runnable onComplete) {
-    	if (target.getHp() <= 100 && target.isAlive()) {
+        if (target.getHp() <= 100 && target.isAlive()) {
             if (isUserTeam) {
                 view.skillBoard(target, ps, onComplete);
             } else {
@@ -59,7 +59,7 @@ public class BattleController {
         if (!available.isEmpty()) {
             int skillIdx = available.get(random.nextInt(available.size()));
             target.useSkill(skillIdx, view);
-            view.appendLog("[BLUE] " + target.getName() + " 스킬 [" + skills[skillIdx] + "] 자동 발동!");
+            view.appendLog("[JOJA] " + target.getName() + " 스킬 [" + skills[skillIdx] + "] 자동 발동!");
             view.updateAllTeams(ps);
         }
         onComplete.run();
@@ -137,7 +137,7 @@ public class BattleController {
 
         selectedAttacker = attacker;
         
-        checkAndConvertIfNeeded(attacker, "red");
+        checkAndConvertIfNeeded(attacker, "pierre");
 
         if (isSupporter(attacker) && !isDealerMode(attacker)) {
             enterUserSelectAlly(panelIdx);
@@ -182,26 +182,26 @@ public class BattleController {
     // ㅡㅡㅡㅡㅡㅡ 전투 실행 ㅡㅡㅡㅡㅡㅡ
 
     private void executeUserAttack(Player attacker, Player target) {
-        checkAndConvertIfNeeded(attacker, "red");
-        performAttack(attacker, target, "[RED]", "[BLUE]");
+        checkAndConvertIfNeeded(attacker, "pierre");
+        performAttack(attacker, target, "[PIERRE]", "[JOJA]");
         view.updateAllTeams(ps);
-        if (Main.checkDefeatTeam(ps)) { endGame("RED 팀 승리!"); return; }
+        if (Main.checkDefeatTeam(ps)) { endGame("PIERRE 팀 승리!"); return; }
         isDanger(target, view, false, () -> enterComputerTurn());
     }
 
     // 무기 공격 실행 (일회용)
     private void executeUserWeaponAttack(Player attacker, Player target) {
-        checkAndConvertIfNeeded(attacker, "red");
+        checkAndConvertIfNeeded(attacker, "pierre");
 
         attacker.attack(target, attacker.getWeapon());
-        view.appendLog("[RED] " + attacker.getName()
-                + " → [BLUE] " + target.getName()
+        view.appendLog("[PIERRE] " + attacker.getName()
+                + " → [JOJA] " + target.getName()
                 + " 무기 공격! (남은 HP: " + Math.max(target.getHp(), 0) + ")");
 
         attacker.setWeapon(null); // 무기 소진 (일회용)
 
         view.updateAllTeams(ps);
-        if (Main.checkDefeatTeam(ps)) { endGame("RED 팀 승리!"); return; }
+        if (Main.checkDefeatTeam(ps)) { endGame("PIERRE 팀 승리!"); return; }
         isDanger(target, view, false, () -> enterComputerTurn());
     }
 
@@ -217,25 +217,25 @@ public class BattleController {
         if (isSupporter(attacker)) {
             if (!isDealerMode(attacker)) {
                 attacker.useSkill(ps, null);
-                view.appendLog("[BLUE] " + attacker.getName() + " 스킬 사용!");
+                view.appendLog("[JOJA] " + attacker.getName() + " 스킬 사용!");
             } else {
                 List<Player> aliveTargets = getAlivePlayers(LEFT_PS_IDX);
                 if (aliveTargets.isEmpty()) return;
                 target = aliveTargets.get(random.nextInt(aliveTargets.size()));
                 attacker.useSkill(ps, target);
-                view.appendLog("[BLUE] " + attacker.getName()
-                        + " → [RED] " + target.getName()
+                view.appendLog("[JOJA] " + attacker.getName()
+                        + " → [PIERRE] " + target.getName()
                         + " 공격! (남은 HP: " + Math.max(target.getHp(), 0) + ")");
             }
         } else {
             List<Player> aliveTargets = getAlivePlayers(LEFT_PS_IDX);
             if (aliveTargets.isEmpty()) return;
             target = aliveTargets.get(random.nextInt(aliveTargets.size()));
-            performAttack(attacker, target, "[BLUE]", "[RED]");
+            performAttack(attacker, target, "[JOJA]", "[PIERRE]");
         }
 
         view.updateAllTeams(ps);
-        if (Main.checkDefeatTeam(ps)) { endGame("BLUE 팀 승리!"); return; }
+        if (Main.checkDefeatTeam(ps)) { endGame("JOJA 팀 승리!"); return; }
 
         if (target != null) {
             final Player finalTarget = target;
@@ -258,12 +258,12 @@ public class BattleController {
     }
 
     private void executeUserSkill(Player attacker, Player target) {
-        checkAndConvertIfNeeded(attacker, "red");
+        checkAndConvertIfNeeded(attacker, "pierre");
         attacker.useSkill(ps, target);
-        view.appendLog("[RED] " + attacker.getName()
-                + " → [RED] " + target.getName() + " 스킬 사용!");
+        view.appendLog("[PIERRE] " + attacker.getName()
+                + " → [PIERRE] " + target.getName() + " 스킬 사용!");
         view.updateAllTeams(ps);
-        if (Main.checkDefeatTeam(ps)) { endGame("RED 팀 승리!"); return; }
+        if (Main.checkDefeatTeam(ps)) { endGame("PIERRE 팀 승리!"); return; }
         isDanger(target, view, true, () -> enterComputerTurn());
     }
 
@@ -288,7 +288,7 @@ public class BattleController {
         view.clearAllHighlights();
         view.appendLog("\n" + msg + " 게임 종료.");
         
-        String winnerTeam = msg.contains("RED") ? "PIERRE" : "JOJA";
+        String winnerTeam = msg.contains("PIERRE") ? "Pierre" : "Joja";
         view.showWinner(ps, winnerTeam);
     }
 
