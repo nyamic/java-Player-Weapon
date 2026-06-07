@@ -42,13 +42,11 @@ public class Player implements Attackable {
     public void applyBuff(PowerBuff buff) {
         this.activeBuff = buff;
         view.appendLog(name + ": 버프 +" + buff.getAmount() + " 적용됨", "reset");
-        this.setPower(basePower + buff.getAmount());
     }
     
     public void attack(Player target) {
-        basePower = getEffectivePower();
-        
-        target.setHp(target.getHp() - this.basePower);
+        int power = getEffectivePower();
+        target.setHp(target.getHp() - power);
 
         if (activeBuff != null) {
             activeBuff = null;
