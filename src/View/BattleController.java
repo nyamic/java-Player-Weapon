@@ -137,7 +137,6 @@ public class BattleController {
 
         selectedAttacker = attacker;
         
-        checkAndConvertIfNeeded(attacker, "pierre");
 
         if (isSupporter(attacker) && !isDealerMode(attacker)) {
             enterUserSelectAlly(panelIdx);
@@ -210,7 +209,7 @@ public class BattleController {
         if (aliveAttackers.isEmpty()) return;
 
         Player attacker = aliveAttackers.get(random.nextInt(aliveAttackers.size()));
-        checkAndConvertIfNeeded(attacker, "blue");
+        checkAndConvertIfNeeded(attacker, "joja");
 
         Player target = null;
 
