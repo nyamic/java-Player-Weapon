@@ -66,7 +66,7 @@ public class 거스 extends Player {
 	public void 버프주기(Player target) {
 		view.appendLog(this.getName() + "가 " + target.getName() + "의 power를 10 증가시킵니다.", "reset");
 
-		target.applyBuff(new PowerBuff(this.getPower()));
+		target.applyBuff(new PowerBuff(10));
 	}
 
 	public void 허허허사람좋은웃음짓기(BattleView view) {		
